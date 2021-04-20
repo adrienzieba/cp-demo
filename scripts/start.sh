@@ -50,7 +50,28 @@ if [[ $(docker-compose ps openldap | grep Exit) =~ "Exit" ]] ; then
 fi
 
 # Bring up base cluster and Confluent CLI
-docker-compose up -d zookeeper kafka1 kafka2 tools
+docker-compose up -d zookeeper 
+
+export JAVA_HOME=`/usr/libexec/java_home -v 1.8.0_121`
+
+KAFKA_OPTS="-Djava.security.auth.login.config=/Users/adrien.zieba/sources/cp-demo/scripts/security/broker_jaas.conf" ./scripts/kafka_2.13-2.8.0/bin/kafka-configs.sh --zookeeper localhost:2181 --alter --add-config 'SCRAM-SHA-256=[password=admin-secret],SCRAM-SHA-512=[password=admin-secret]' --entity-type users --entity-name admin
+
+KAFKA_OPTS="-Djava.security.auth.login.config=/Users/adrien.zieba/sources/cp-demo/scripts/security/broker_jaas.conf" ./scripts/kafka_2.13-2.8.0/bin/kafka-configs.sh --zookeeper localhost:2181 --alter --add-config 'SCRAM-SHA-256=[password=superUser],SCRAM-SHA-512=[password=superUser]' --entity-type users --entity-name superUser
+
+KAFKA_OPTS="-Djava.security.auth.login.config=/Users/adrien.zieba/sources/cp-demo/scripts/security/broker_jaas.conf" ./scripts/kafka_2.13-2.8.0/bin/kafka-configs.sh --zookeeper localhost:2181 --alter --add-config 'SCRAM-SHA-256=[password=adrien-secret],SCRAM-SHA-512=[password=adrien-secret]' --entity-type users --entity-name adrien
+
+KAFKA_OPTS="-Djava.security.auth.login.config=/Users/adrien.zieba/sources/cp-demo/scripts/security/broker_jaas.conf" ./scripts/kafka_2.13-2.8.0/bin/kafka-configs.sh --zookeeper localhost:2181 --alter --add-config 'SCRAM-SHA-256=[password=connect-secret],SCRAM-SHA-512=[password=connect-secret]' --entity-type users --entity-name connect
+
+KAFKA_OPTS="-Djava.security.auth.login.config=/Users/adrien.zieba/sources/cp-demo/scripts/security/broker_jaas.conf" ./scripts/kafka_2.13-2.8.0/bin/kafka-configs.sh --zookeeper localhost:2181 --alter --add-config 'SCRAM-SHA-256=[password=controlcenterAdmin],SCRAM-SHA-512=[password=controlcenterAdmin]' --entity-type users --entity-name controlcenterAdmin
+
+KAFKA_OPTS="-Djava.security.auth.login.config=/Users/adrien.zieba/sources/cp-demo/scripts/security/broker_jaas.conf" ./scripts/kafka_2.13-2.8.0/bin/kafka-configs.sh --zookeeper localhost:2181 --alter --add-config 'SCRAM-SHA-256=[password=schemaregistryUser],SCRAM-SHA-512=[password=schemaregistryUser]' --entity-type users --entity-name schemaregistryUser
+
+KAFKA_OPTS="-Djava.security.auth.login.config=/Users/adrien.zieba/sources/cp-demo/scripts/security/broker_jaas.conf" ./scripts/kafka_2.13-2.8.0/bin/kafka-configs.sh --zookeeper localhost:2181 --alter --add-config 'SCRAM-SHA-256=[password=ksqlDBAdmin],SCRAM-SHA-512=[password=ksqlDBAdmin]' --entity-type users --entity-name ksqlDBAdmin
+
+KAFKA_OPTS="-Djava.security.auth.login.config=/Users/adrien.zieba/sources/cp-demo/scripts/security/broker_jaas.conf" ./scripts/kafka_2.13-2.8.0/bin/kafka-configs.sh --zookeeper localhost:2181 --alter --add-config 'SCRAM-SHA-256=[password=restAdmin],SCRAM-SHA-512=[password=restAdmin]' --entity-type users --entity-name restAdmin
+
+
+docker-compose up -d kafka1 kafka2 tools
 
 # Verify MDS has started
 MAX_WAIT=120

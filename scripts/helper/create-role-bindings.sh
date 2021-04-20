@@ -19,7 +19,7 @@ LICENSE_RESOURCE="Topic:_confluent-license"
 SUPER_USER=superUser
 SUPER_USER_PASSWORD=superUser
 SUPER_USER_PRINCIPAL="User:$SUPER_USER"
-CONNECT_ADMIN="User:connectAdmin"
+CONNECT_ADMIN="User:connect"
 CONNECTOR_SUBMITTER="User:connectorSubmitter"
 CONNECTOR_PRINCIPAL="User:connectorSA"
 SR_PRINCIPAL="User:schemaregistryUser"
@@ -30,6 +30,7 @@ C3_ADMIN="User:controlcenterAdmin"
 REST_ADMIN="User:restAdmin"
 CLIENT_PRINCIPAL="User:appSA"
 LISTEN_PRINCIPAL="User:clientListen"
+ADRIEN_PRINCIPAL="User:adrien"
 
 mds_login $MDS_URL ${SUPER_USER} ${SUPER_USER_PASSWORD} || exit 1
 
@@ -55,6 +56,32 @@ confluent iam rolebinding create \
 
 confluent iam rolebinding create \
     --principal $SUPER_USER_PRINCIPAL \
+    --role SystemAdmin \
+    --kafka-cluster-id $KAFKA_CLUSTER_ID \
+    --ksql-cluster-id $KSQLDB
+
+################################### ADRIEN ###################################
+echo "Creating role bindings for ADRIENr"
+
+confluent iam rolebinding create \
+    --principal $ADRIEN_PRINCIPAL  \
+    --role SystemAdmin \
+    --kafka-cluster-id $KAFKA_CLUSTER_ID
+
+confluent iam rolebinding create \
+    --principal $ADRIEN_PRINCIPAL \
+    --role SystemAdmin \
+    --kafka-cluster-id $KAFKA_CLUSTER_ID \
+    --schema-registry-cluster-id $SR
+
+confluent iam rolebinding create \
+    --principal $ADRIEN_PRINCIPAL \
+    --role SystemAdmin \
+    --kafka-cluster-id $KAFKA_CLUSTER_ID \
+    --connect-cluster-id $CONNECT
+
+confluent iam rolebinding create \
+    --principal $ADRIEN_PRINCIPAL \
     --role SystemAdmin \
     --kafka-cluster-id $KAFKA_CLUSTER_ID \
     --ksql-cluster-id $KSQLDB

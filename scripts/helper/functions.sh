@@ -307,7 +307,7 @@ create_topic() {
   IFS= read -rd '' out
   IFS= read -rd '' http_code
   IFS= read -rd '' status
-  } < <({ out=$(curl -sS -X POST \
+  } < <({ out=$(curl -v -sS -X POST \
     -o /dev/stderr \
     -w "%{http_code}" \
     -u ${auth} \
